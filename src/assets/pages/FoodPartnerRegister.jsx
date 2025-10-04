@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 const FoodPartnerRegister = () => {
   const [darkMode, setDarkMode] = useState(true);
@@ -13,17 +14,18 @@ const FoodPartnerRegister = () => {
     restaurantName: "",
     cuisine: "",
   });
+  const { register } = useContext(AuthContext);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    try {
-      const res = await registerFoodPartner(form);
-      alert(res.data.message);
-    } catch (err) {
-      alert(err.response?.data?.message || "Register failed");
+    const success = await register(form, true); // true = food partner
+    if (success) {
+      alert("Food partner registered successfully!");
+    } else {
+      alert("Registration failed");
     }
   };
 
@@ -45,55 +47,16 @@ const FoodPartnerRegister = () => {
         </div>
 
         <form onSubmit={handleRegister} className="space-y-3">
-          <input
-            type="text"
-            name="name"
-            placeholder="Owner Name"
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-          <input
-            type="text"
-            name="phone"
-            placeholder="Phone"
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-          <input
-            type="text"
-            name="address"
-            placeholder="Address"
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-          <input
-            type="text"
-            name="restaurantName"
-            placeholder="Restaurant Name"
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-          <input
-            type="text"
-            name="cuisine"
-            placeholder="Cuisine"
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
+          {["name", "email", "password", "phone", "address", "restaurantName", "cuisine"].map((field) => (
+            <input
+              key={field}
+              type={field === "password" ? "password" : "text"}
+              name={field}
+              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          ))}
 
           <button
             type="submit"

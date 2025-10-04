@@ -1,11 +1,16 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useContext } from "react";
 import { dummyVideos } from "../data/dummyVideos";
-import { ChevronLeft, ChevronRight } from "lucide-react"; // icons
+import { ChevronLeft, ChevronRight } from "lucide-react"; 
+import { CartContext } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const VideoCard = () => {
   const videoRefs = useRef([]);
   const sliderRef = useRef(null);
   const [isPaused, setIsPaused] = useState(false);
+
+  const { addToCart } = useContext(CartContext);
+  const navigate = useNavigate();
 
   // autoplay muted for all videos
   useEffect(() => {
@@ -33,7 +38,7 @@ const VideoCard = () => {
     });
   };
 
-  // Manual controls
+  // Manual slider controls
   const scrollLeft = () => {
     sliderRef.current.scrollBy({ left: -350, behavior: "smooth" });
   };
@@ -43,6 +48,16 @@ const VideoCard = () => {
 
   return (
     <div className="relative w-full bg-gray-900 p-6 overflow-hidden">
+      {/* Text above slider */}
+      <div className="text-center mb-6">
+        <h2 className="text-3xl font-bold text-white mb-2">
+          Explore Our Delicious Dishes
+        </h2>
+        <p className="text-gray-300 max-w-2xl mx-auto">
+          Watch these short clips of our mouth-watering dishes and order directly from your favorite restaurant.
+        </p>
+      </div>
+
       {/* Controls */}
       <button
         onClick={scrollLeft}
@@ -60,7 +75,7 @@ const VideoCard = () => {
       {/* Slider */}
       <div
         ref={sliderRef}
-        className="flex animate-slide space-x-6"
+        className="flex animate-slide space-x-6 overflow-x-auto scrollbar-hide"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
@@ -84,18 +99,19 @@ const VideoCard = () => {
               <h2 className="text-lg font-semibold">{video.title}</h2>
               <p className="text-sm text-gray-400">{video.restaurant}</p>
               <div className="flex justify-between mt-3">
-                <a
-                  href={video.actionLinks.order}
+                <button
+                  onClick={() => addToCart(video)}
                   className="px-4 py-2 bg-green-600 rounded-lg hover:bg-green-700 transition"
                 >
-                  Order
-                </a>
-                <a
-                  href={video.actionLinks.restaurant}
+                  Add to Cart
+                
+                </button>
+                <button
+                  onClick={() => navigate("/menu")} // navigate to menu page / restaurant cards
                   className="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition"
                 >
-                  Go to Restaurant
-                </a>
+                  View More
+                </button>
               </div>
             </div>
           </div>

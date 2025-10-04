@@ -1,19 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 const FoodPartnerLogin = () => {
   const [darkMode, setDarkMode] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { login } = useContext(AuthContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const res = await loginFoodPartner({ email, password });
-      alert(res.data.message);
-    } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+    const success = await login({ email, password }, true); // true = food partner
+    if (success) {
+      alert("Login successful!");
+    } else {
+      alert("Login failed");
     }
   };
 

@@ -5,7 +5,7 @@ export const dummyVideos = [
     id: 1,
     title: "Spicy Chicken Biryani",
     restaurant: "Royal Biryani House",
-    videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4", // sample video
+    videoUrl: "src/assets/photos/12888336_1080_1920_30fps.mp4", // sample video
     thumbnail: "https://source.unsplash.com/600x400/?biryani",
     category: "Rice",
     actionLinks: {
@@ -15,9 +15,9 @@ export const dummyVideos = [
   },
   {
     id: 2,
-    title: "Cheesy Pepperoni Pizza",
+    title: "Cheesy Pasta",
     restaurant: "Pizza Planet",
-    videoUrl: "https://www.w3schools.com/html/movie.mp4",
+    videoUrl:"src/assets/photos/4253150-uhd_4096_2160_25fps.mp4",
     thumbnail: "https://source.unsplash.com/600x400/?pizza",
     category: "Pizza",
     actionLinks: {
@@ -27,9 +27,9 @@ export const dummyVideos = [
   },
   {
     id: 3,
-    title: "Grilled Beef Burger",
+    title: "BBQ Meat Pizza",
     restaurant: "Burger Hub",
-    videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+    videoUrl: "src/assets/photos/7008562-hd_1080_1920_25fps.mp4",
     thumbnail: "https://source.unsplash.com/600x400/?burger",
     category: "Burgers",
     actionLinks: {
@@ -39,9 +39,9 @@ export const dummyVideos = [
   },
   {
     id: 4,
-    title: "Fresh Sushi Platter",
+    title: "Beef Burger with Cheese",
     restaurant: "Tokyo Dine",
-    videoUrl: "https://www.w3schools.com/html/movie.mp4",
+    videoUrl: "src/assets/photos/8879540-uhd_2160_4096_25fps.mp4",
     thumbnail: "https://source.unsplash.com/600x400/?sushi",
     category: "Japanese",
     actionLinks: {

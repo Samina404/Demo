@@ -2,16 +2,16 @@ import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-amber-100 text-gray-800 py-10 mt-10">
+    <footer id="footer" className="bg-orange-500 text-gray-800 py-10 mt-10">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 px-6">
         {/* Navigate */}
         <div>
           <h3 className="text-lg font-semibold mb-3">Navigate</h3>
           <ul className="space-y-2 text-sm">
             <li><a href="/" className="hover:text-orange-600">Home</a></li>
-            <li><a href="/about" className="hover:text-orange-600">About</a></li>
+            <li><button onClick={() => scrollToFooter()} className="hover:text-orange-600">About</button></li>
             <li><a href="/menu" className="hover:text-orange-600">Menu</a></li>
-            <li><a href="/contact" className="hover:text-orange-600">Contact</a></li>
+            <li><button onClick={() => scrollToFooter()} className="hover:text-orange-600">Contact</button></li>
           </ul>
         </div>
 
@@ -54,3 +54,9 @@ export default function Footer() {
     </footer>
   );
 }
+
+// Smooth scroll function (place in a utility or in Navbar)
+export const scrollToFooter = () => {
+  const footer = document.getElementById("footer");
+  if (footer) footer.scrollIntoView({ behavior: "smooth" });
+};
