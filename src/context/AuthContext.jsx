@@ -4,7 +4,8 @@ import axios from "axios";
 
 export const AuthContext = createContext();
 
-axios.defaults.baseURL = "http://localhost:5000"; // backend base URL
+// axios.defaults.baseURL = "http://localhost:5000"; // backend base URL
+axios.defaults.baseURL = "https://zomato-production-6259.up.railway.app"; // backend base URL
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
