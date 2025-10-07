@@ -1,52 +1,42 @@
-// src/data/dummyVideos.js
-
 export const dummyVideos = [
   {
     id: 1,
     title: "Spicy Chicken Biryani",
     restaurant: "Royal Biryani House",
-    videoUrl: "src/assets/photos/12888336_1080_1920_30fps.mp4", // sample video
-    thumbnail: "https://source.unsplash.com/600x400/?biryani",
+    videoUrl: "https://www.pexels.com/download/video/30044489/",
+    thumbnail: "https://www.pexels.com/download/video/30044483/",
     category: "Rice",
-    actionLinks: {
-      order: "/order/1",
-      restaurant: "/restaurant/1"
-    }
+    Price: 500, // number, not string
+    actionLinks: { order: "/order/1", restaurant: "/restaurant/1" }
   },
   {
     id: 2,
     title: "Cheesy Pasta",
     restaurant: "Pizza Planet",
-    videoUrl:"src/assets/photos/4253150-uhd_4096_2160_25fps.mp4",
+    videoUrl:"https://www.pexels.com/download/video/27769284/",
     thumbnail: "https://source.unsplash.com/600x400/?pizza",
     category: "Pizza",
-    actionLinks: {
-      order: "/order/2",
-      restaurant: "/restaurant/2"
-    }
+    Price: 400, // added
+    actionLinks: { order: "/order/2", restaurant: "/restaurant/2" }
   },
   {
     id: 3,
     title: "BBQ Meat Pizza",
     restaurant: "Burger Hub",
-    videoUrl: "src/assets/photos/7008562-hd_1080_1920_25fps.mp4",
-    thumbnail: "https://source.unsplash.com/600x400/?burger",
+    videoUrl: "https://www.pexels.com/download/video/7008562",
+    thumbnail: "https://www.pexels.com/download/video/7008562/",
     category: "Burgers",
-    actionLinks: {
-      order: "/order/3",
-      restaurant: "/restaurant/3"
-    }
+    Price: 600, // added
+    actionLinks: { order: "/order/3", restaurant: "/restaurant/3" }
   },
   {
     id: 4,
     title: "Beef Burger with Cheese",
     restaurant: "Tokyo Dine",
-    videoUrl: "src/assets/photos/8879540-uhd_2160_4096_25fps.mp4",
+    videoUrl: "https://www.pexels.com/download/video/8879540/",
     thumbnail: "https://source.unsplash.com/600x400/?sushi",
     category: "Japanese",
-    actionLinks: {
-      order: "/order/4",
-      restaurant: "/restaurant/4"
-    }
+    Price: 550, // added
+    actionLinks: { order: "/order/4", restaurant: "/restaurant/4" }
   }
 ];

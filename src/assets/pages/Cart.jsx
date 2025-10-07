@@ -8,11 +8,15 @@ const Cart = () => {
   const { cartItems, removeFromCart, addToCart } = useContext(CartContext);
   const { isLoggedIn } = useContext(AuthContext);
 
-  const total = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+  // Safe total calculation
+  const total = cartItems.reduce((sum, item) => {
+    const price = Number(item.Price) || 0;
+    const qty = item.qty || 1;
+    return sum + price * qty;
+  }, 0);
 
   const handleCheckout = () => {
     if (!isLoggedIn) {
-      // Redirect to login if not logged in, pass intended path
       navigate("/user/login", { state: { from: "/checkout" } });
     } else {
       navigate("/checkout");
@@ -29,36 +33,39 @@ const Cart = () => {
         </div>
       ) : (
         <div className="space-y-6">
-          {cartItems.map((item) => (
-            <div
-              key={item.id}
-              className="flex justify-between items-center bg-white shadow-md p-6 rounded-lg"
-            >
-              <div>
-                <h3 className="font-semibold text-lg">{item.name}</h3>
-                <p className="text-gray-600">৳ {item.price} each</p>
-              </div>
+          {cartItems.map((item) => {
+            const price = Number(item.Price) || 0;
+            const qty = item.qty || 1;
+            return (
+              <div
+                key={item.id}
+                className="flex justify-between items-center bg-white shadow-md p-6 rounded-lg"
+              >
+                <div>
+                  <h3 className="font-semibold text-lg">{item.title || item.name}</h3>
+                  <p className="text-gray-600">৳ {price} each</p>
+                </div>
 
-              <div className="flex items-center gap-4">
-                {/* Quantity Buttons */}
-                <button
-                  onClick={() => removeFromCart(item.id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                >
-                  -
-                </button>
-                <span className="font-bold">{item.qty}</span>
-                <button
-                  onClick={() => addToCart(item)}
-                  className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
-                >
-                  +
-                </button>
-              </div>
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => removeFromCart(item.id)}
+                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                  >
+                    -
+                  </button>
+                  <span className="font-bold">{qty}</span>
+                  <button
+                    onClick={() => addToCart(item)}
+                    className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                  >
+                    +
+                  </button>
+                </div>
 
-              <p className="font-bold text-lg">৳ {item.price * item.qty}</p>
-            </div>
-          ))}
+                <p className="font-bold text-lg">৳ {price * qty}</p>
+              </div>
+            );
+          })}
 
           {/* Total */}
           <div className="bg-white shadow-md p-6 rounded-lg flex justify-between items-center">
