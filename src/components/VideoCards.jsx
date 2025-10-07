@@ -1,8 +1,10 @@
 import { useRef, useEffect, useState, useContext } from "react";
 import { dummyVideos } from "../data/dummyVideos";
-import { ChevronLeft, ChevronRight } from "lucide-react"; 
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CartContext } from "../context/CartContext";
+import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const VideoCard = () => {
   const videoRefs = useRef([]);
@@ -10,22 +12,24 @@ const VideoCard = () => {
   const [isPaused, setIsPaused] = useState(false);
 
   const { addToCart } = useContext(CartContext);
+  const { isLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // autoplay muted for all videos
+  // Auto-play muted videos
   useEffect(() => {
     videoRefs.current.forEach((vid) => {
       if (vid) vid.play().catch(() => {});
     });
   }, []);
 
-  // pause animation when hover
+  // Pause animation on hover
   useEffect(() => {
     if (sliderRef.current) {
       sliderRef.current.style.animationPlayState = isPaused ? "paused" : "running";
     }
   }, [isPaused]);
 
+  // Mute toggle
   const handleMuteToggle = (index, unmute) => {
     videoRefs.current.forEach((vid, i) => {
       if (!vid) return;
@@ -38,7 +42,7 @@ const VideoCard = () => {
     });
   };
 
-  // Manual slider controls
+  // Scroll controls
   const scrollLeft = () => {
     sliderRef.current.scrollBy({ left: -350, behavior: "smooth" });
   };
@@ -46,14 +50,20 @@ const VideoCard = () => {
     sliderRef.current.scrollBy({ left: 350, behavior: "smooth" });
   };
 
+  // ✅ Handle Add to Cart (fixed)
   const handleAddToCart = (video) => {
-    // Ensure numeric Price and qty
-    const item = { 
-      ...video, 
-      Price: Number(video.Price) || 0, 
-      qty: 1 
+   
+    // Normalize keys to match CartContext expectations
+    const normalizedItem = {
+      id: video.id,
+      title: video.title || video.name || "Untitled Dish",
+      Price: Number(video.Price ?? video.price ?? 0),
+      image: video.thumbnail || video.image || "",
+      qty: 1,
     };
-    addToCart(item);
+
+    addToCart(normalizedItem);
+    
   };
 
   return (
@@ -63,11 +73,11 @@ const VideoCard = () => {
           Explore Our Delicious Dishes
         </h2>
         <p className="text-gray-300 max-w-2xl mx-auto">
-          Watch these short clips of our mouth-watering dishes and order directly from your favorite restaurant.
+          Watch short clips of our mouth-watering dishes and order directly from your favorite restaurant.
         </p>
       </div>
 
-      {/* Slider Controls */}
+      {/* Controls */}
       <button
         onClick={scrollLeft}
         className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 p-2 rounded-full hover:bg-black/80 z-10"
@@ -81,7 +91,7 @@ const VideoCard = () => {
         <ChevronRight className="text-white w-6 h-6" />
       </button>
 
-      {/* Slider */}
+      {/* Video Slider */}
       <div
         ref={sliderRef}
         className="flex animate-slide space-x-6 overflow-x-auto scrollbar-hide"
@@ -107,7 +117,9 @@ const VideoCard = () => {
             <div className="p-4">
               <h2 className="text-lg font-semibold">{video.title}</h2>
               <p className="text-sm text-gray-400">{video.restaurant}</p>
-              <p className="text-sm text-gray-200 mt-1">Price: ₹{Number(video.Price) || 0}</p>
+              <p className="text-sm text-gray-200 mt-1">
+                Price: ৳{Number(video.Price ?? video.price ?? 0)}
+              </p>
 
               <div className="flex justify-between mt-3">
                 <button

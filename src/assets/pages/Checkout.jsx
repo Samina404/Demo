@@ -1,16 +1,29 @@
-// // src/pages/Checkout.jsx
-// import React, { useContext } from "react";
-// import { CartContext } from "../../context/CartContext";
-
-import React from "react";
+// src/pages/Checkout.jsx
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { CartContext } from "../../context/CartContext";
+import toast from "react-hot-toast";
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const { cartItems, clearCart } = useContext(CartContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // here you could handle payment API etc.
+
+    if (cartItems.length === 0) {
+      toast.error("🛒 Your cart is empty!");
+      return;
+    }
+
+    // Here you could handle payment API, validation, etc.
+    console.log("Order placed:", cartItems);
+
+    // Clear cart after placing order
+    clearCart();
+  
+
+    // Navigate to success page
     navigate("/success");
   };
 

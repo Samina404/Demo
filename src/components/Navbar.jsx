@@ -1,42 +1,32 @@
-import { MapPin, ChevronDown, ShoppingCart, Menu, X, User } from "lucide-react";
-import { useState, useContext, useEffect } from "react";
+import { MapPin, ShoppingCart } from "lucide-react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
-  const [mobileMenu, setMobileMenu] = useState(false);
-  const [user, setUser] = useState(null); // track logged-in user
   const { cartItems } = useContext(CartContext);
+  const { auth, setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
-  const cartCount = cartItems.reduce((sum, item) => sum + item.qty, 0);
+  const [mobileMenu, setMobileMenu] = useState(false);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error("Error parsing user from localStorage:", error);
-        localStorage.removeItem("user");
-      }
-    }
-  }, []);
+  const cartCount = cartItems.reduce((sum, item) => sum + item.qty, 0);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    setUser(null);
+    localStorage.removeItem("token");
+    setAuth({ token: null, role: null, user: null });
     navigate("/");
   };
 
   const scrollToFooter = () => {
     const footer = document.getElementById("footer");
-    if (footer) {
-      footer.scrollIntoView({ behavior: "smooth" });
-    } else {
-      navigate("/", { state: { scrollToFooter: true } });
-    }
+    if (footer) footer.scrollIntoView({ behavior: "smooth" });
+    else navigate("/", { state: { scrollToFooter: true } });
   };
+
+  const username =
+    auth?.user?.name || auth?.user?.email?.split("@")[0] || "Guest";
 
   return (
     <header className="flex justify-between items-center px-6 py-3 shadow-sm bg-orange-500 relative">
@@ -48,73 +38,49 @@ export default function Navbar() {
         className="md:hidden text-white focus:outline-none"
         onClick={() => setMobileMenu(!mobileMenu)}
       >
-        {mobileMenu ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+        ☰
       </button>
 
+      {/* Desktop Nav */}
       <nav className="hidden md:flex space-x-8 text-white font-medium items-center">
-        <Link to="/" className="hover:text-yellow-300">Home</Link>
-        <Link to="/menu" className="hover:text-yellow-300">Menu</Link>
-        <button onClick={scrollToFooter} className="hover:text-yellow-300">About</button>
-        <button onClick={scrollToFooter} className="hover:text-yellow-300">Contact</button>
+        <Link to="/" className="hover:text-yellow-300">
+          Home
+        </Link>
+        <Link to="/menu" className="hover:text-yellow-300">
+          Menu
+        </Link>
+        <button onClick={scrollToFooter} className="hover:text-yellow-300">
+          About
+        </button>
+        <button onClick={scrollToFooter} className="hover:text-yellow-300">
+          Contact
+        </button>
 
-        {/* User Icon / Login */}
-        {user ? (
-          <div className="relative">
+        {auth?.token ? (
+          <div className="flex items-center space-x-3">
+            
             <button
-              onClick={() => setOpen(!open)}
-              className="flex items-center space-x-1 hover:text-yellow-300"
+              onClick={handleLogout}
+              className="px-3 py-1 rounded bg-white text-orange-600 font-medium hover:bg-yellow-200"
             >
-              <User className="w-5 h-5" />
-              <span>{user.name || "Account"}</span>
-              <ChevronDown className="w-4 h-4" />
+              Logout
             </button>
-
-            {open && (
-              <div className="absolute right-0 mt-2 w-36 bg-gray-800 shadow-md rounded-md overflow-hidden z-10">
-                <button
-                  onClick={handleLogout}
-                  className="block px-4 py-2 hover:text-yellow-500 text-left text-white w-full"
-                >
-                  Logout
-                </button>
-              </div>
-            )}
           </div>
         ) : (
-          <div className="relative">
-            <button
-              onClick={() => setOpen(!open)}
-              className="flex items-center space-x-1 hover:text-yellow-300"
-            >
-              <span>Login</span>
-              <ChevronDown className="w-4 h-4" />
-            </button>
-
-            {open && (
-              <div className="absolute right-0 mt-2 w-40 bg-gray-800 shadow-md rounded-md overflow-hidden z-10">
-                <Link
-                  to="/user/login"
-                  className="block px-4 py-2 hover:text-yellow-500 text-left text-white"
-                >
-                  User Login
-                </Link>
-                <Link
-                  to="/food-partner/login"
-                  className="block px-4 py-2 hover:text-yellow-500 text-left text-white"
-                >
-                  Admin Login
-                </Link>
-              </div>
-            )}
-          </div>
+          <Link
+            to="/user/login"
+            className="hover:text-yellow-300 font-medium"
+          >
+            Login
+          </Link>
         )}
       </nav>
 
+      {/* Cart & Location */}
       <div className="flex items-center space-x-4">
         <button className="p-2 rounded-full hover:bg-orange-400">
           <MapPin className="w-6 h-6 text-white" />
         </button>
-
         <Link to="/cart" className="relative p-2 rounded-full hover:bg-orange-400">
           <ShoppingCart className="w-6 h-6 text-white" />
           {cartCount > 0 && (
@@ -128,24 +94,50 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {mobileMenu && (
         <div className="absolute top-full left-0 w-full bg-orange-600 text-white flex flex-col items-start p-5 space-y-4 md:hidden z-20">
-          <Link to="/" className="w-full hover:text-yellow-300" onClick={() => setMobileMenu(false)}>Home</Link>
-          <Link to="/menu" className="w-full hover:text-yellow-300" onClick={() => setMobileMenu(false)}>Menu</Link>
-          <button onClick={() => { scrollToFooter(); setMobileMenu(false); }} className="w-full text-left hover:text-yellow-300">About</button>
-          <button onClick={() => { scrollToFooter(); setMobileMenu(false); }} className="w-full text-left hover:text-yellow-300">Contact</button>
+          <Link to="/" onClick={() => setMobileMenu(false)}>
+            Home
+          </Link>
+          <Link to="/menu" onClick={() => setMobileMenu(false)}>
+            Menu
+          </Link>
+          <button onClick={() => { scrollToFooter(); setMobileMenu(false); }}>
+            About
+          </button>
+          <button onClick={() => { scrollToFooter(); setMobileMenu(false); }}>
+            Contact
+          </button>
 
-          <div className="border-t border-orange-400 w-full pt-3">
-            {user ? (
-              <div className="flex flex-col space-y-2">
-                <span>{user.name || "Account"}</span>
-                <button onClick={handleLogout} className="hover:text-yellow-300 text-left">Logout</button>
-              </div>
-            ) : (
-              <>
-                <Link to="/user/login" className="block py-2 hover:text-yellow-300" onClick={() => setMobileMenu(false)}>User Login</Link>
-                <Link to="/food-partner/login" className="block py-2 hover:text-yellow-300" onClick={() => setMobileMenu(false)}>Admin Login</Link>
-              </>
-            )}
-          </div>
+          {auth?.token ? (
+            <div className="flex flex-col space-y-2">
+              
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setMobileMenu(false);
+                }}
+                className="hover:text-yellow-300"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <>
+              <Link
+                to="/user/login"
+                className="hover:text-yellow-300"
+                onClick={() => setMobileMenu(false)}
+              >
+                User Login
+              </Link>
+              <Link
+                to="/food-partner/login"
+                className="hover:text-yellow-300"
+                onClick={() => setMobileMenu(false)}
+              >
+                Admin Login
+              </Link>
+            </>
+          )}
         </div>
       )}
     </header>

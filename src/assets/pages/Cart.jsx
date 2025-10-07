@@ -10,7 +10,8 @@ const Cart = () => {
 
   // Safe total calculation
   const total = cartItems.reduce((sum, item) => {
-    const price = Number(item.Price) || 0;
+   const price = Number(item.price ?? item.Price ?? 0);
+
     const qty = item.qty || 1;
     return sum + price * qty;
   }, 0);
@@ -34,7 +35,7 @@ const Cart = () => {
       ) : (
         <div className="space-y-6">
           {cartItems.map((item) => {
-            const price = Number(item.Price) || 0;
+           const price = Number(item.price ?? item.Price ?? 0); 
             const qty = item.qty || 1;
             return (
               <div
